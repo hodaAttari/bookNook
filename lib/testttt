@@ -1,0 +1,142 @@
+
+class SearchPage extends StatefulWidget {
+  @override
+  _SearchPageState createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+  TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      _searchQuery = _searchController.text;
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Customize the search box colors
+    final ThemeData theme = Theme.of(context);
+
+    final ColorScheme colorScheme = theme.colorScheme.copyWith(
+      primary: Colors.amber[400], // set primary color to amber
+      primaryVariant: Colors.amber[900], // set primary variant color to amber
+    );
+
+    final InputDecorationTheme inputDecorationTheme =
+        theme.inputDecorationTheme.copyWith(
+      hintStyle: TextStyle(color: colorScheme.primary),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: colorScheme.primaryVariant),
+      ),
+    );
+
+    return Theme(
+      data: theme.copyWith(
+        colorScheme: colorScheme,
+        inputDecorationTheme: inputDecorationTheme,
+      ),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.amber[400],
+          foregroundColor: Colors.amber[900],
+          title: TextField(
+            controller: _searchController,
+            cursorColor: Colors.amber[900],
+            decoration: InputDecoration(
+              hintText: 'Search book, author, etc...',
+              suffixIcon: IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  // Perform search
+                },
+                color: colorScheme.primaryVariant, // set search icon color to amber
+              ),
+            ),
+          ),
+        ),
+        body: Center(
+          child: _searchQuery.isEmpty
+              ? Text('Enter a search query')
+              : Text('Search results for: $_searchQuery'),
+        ),
+      ),
+    );
+  }
+}
+// class LastBookReadSection extends StatefulWidget {
+//   const LastBookReadSection({Key? key}) : super(key: key);
+
+//   @override
+//   _LastBookReadSectionState createState() => _LastBookReadSectionState();
+// }
+
+// class _LastBookReadSectionState extends State<LastBookReadSection> {
+//   bool _isSectionVisible = true;
+
+//   void _toggleSectionVisibility() {
+//     setState(() {
+//       _isSectionVisible = !_isSectionVisible;
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return _isSectionVisible
+//         ? Container(
+//             height: 100,
+//             margin: EdgeInsets.symmetric(vertical: 16),
+//             decoration: BoxDecoration(
+//               color: Colors.grey[200],
+//               borderRadius: BorderRadius.circular(8),
+//             ),
+//             child: Row(
+//               crossAxisAlignment: CrossAxisAlignment.center,
+//               children: [
+//                 SizedBox(width: 16),
+//                 Container(
+//                   width: 60,
+//                   height: 80,
+//                   decoration: BoxDecoration(
+//                     image: DecorationImage(
+//                       image: NetworkImage(
+//                           'https://newcdn.fidibo.com/images/books/64664_88543_normal.jpg?width=200'),
+//                       fit: BoxFit.cover,
+//                     ),
+//                     borderRadius: BorderRadius.circular(4),
+//                   ),
+//                 ),
+//                 SizedBox(width: 16),
+//                 Expanded(
+//                   child: Column(
+//                     mainAxisAlignment: MainAxisAlignment.center,
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Text('Last Book Read', style: TextStyle(fontSize: 16)),
+//                       Text('Book 7', style: TextStyle(fontSize: 14)),
+//                     ],
+//                   ),
+//                 ),
+//                 IconButton(
+//                   icon: Icon(Icons.close),
+//                   onPressed: _toggleSectionVisibility,
+//                 ),
+//               ],
+//             ),
+//           )
+//         : SizedBox.shrink();
+//   }
+// }
