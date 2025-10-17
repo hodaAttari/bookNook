@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:m/services/ws_client.dart';
 import 'package:m/start/HomePage.dart';
 import 'package:m/start/LoginScreen.dart';
 import 'package:m/account.dart';
@@ -30,6 +32,9 @@ class HomePage extends StatelessWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final WebSocketClient _wsClient = WebSocketClient();
+  StreamSubscription? _wsSub;
+  String? _lastMessage;
   final lightTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: Colors.amber[800],
@@ -71,6 +76,11 @@ class _MyAppState extends State<MyApp> {
             ),
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _handleWsTest,
+          child: Icon(Icons.wifi),
+          tooltip: 'WS Test',
+        ),
       ),
     );
   }
@@ -79,6 +89,25 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _switchValue = value;
     });
+  }
+
+  Future<void> _handleWsTest() async {
+    await _wsClient.connect();
+    _wsSub ??= _wsClient.stream?.listen((event) {
+      _lastMessage = event?.toString();
+      final msg = _lastMessage ?? 'no message';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('WS: ' + msg)),
+      );
+    });
+    _wsClient.send('hello');
+  }
+
+  @override
+  void dispose() {
+    _wsSub?.cancel();
+    _wsClient.close();
+    super.dispose();
   }
 }
 // void main() {
